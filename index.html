@@ -3,89 +3,104 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CABINET MONITOR</title>
+<title>smart fram iot</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@700&display=swap" rel="stylesheet">
 <style>
-  /* 1 หน่วย = 1 พิกเซลของรูปต้นแบบขนาด 1920 x 1080 (สเกลตามหน้าจอ) */
+  /* 1 หน่วย = 1 พิกเซลของภาพต้นแบบขนาด 1456 x 819 (สเกลตามหน้าจอ) */
   :root{
-    --px: calc(max(100vw, 100vh * 16 / 9) / 1920);
+    --px: calc(max(100vw, 100vh * 1456 / 819) / 1456);
     --bg: #fef6f3;
-    --track: #6d6969;
-    --track-on: #6b9fe0;
-    --knob-border: #143f87;
+    --track: #e2adb2;
+    --track-on: #9db36a;
+    --knob: #af9148;
+    --knob-line: #2b2a22;
   }
   *{ box-sizing:border-box; margin:0; padding:0; }
   html,body{ width:100%; height:100%; overflow:hidden; background:var(--bg); }
 
-  /* เวทีอัตราส่วน 16:9 ขยายเต็มจอแบบ cover (สำหรับ desktop) */
+  /* เวทีขนาดอัตราส่วน 16:9 แบบ cover เต็มจอ (desktop) */
   .stage{
     position:absolute; left:50%; top:50%;
-    width:calc(var(--px) * 1920);
-    height:calc(var(--px) * 1080);
+    width:calc(var(--px) * 1456);
+    height:calc(var(--px) * 819);
     transform:translate(-50%,-50%);
     background:url("2.png") center/100% 100% no-repeat;
     user-select:none; -webkit-user-select:none;
   }
+
+  /* ชื่อหัวข้อ (สีเข้มตามต้นแบบ) วางทับพอดีตำแหน่งเดิม */
+  .title{
+    position:absolute;
+    left:calc(var(--px) * 395); top:calc(var(--px) * 100);
+    width:calc(var(--px) * 655); height:calc(var(--px) * 103);
+    display:block; pointer-events:none;
+  }
   h1{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
 
-  /* ตัวเลขในการ์ด: --cx = กึ่งกลางแนวนอน, --top = ตำแหน่งบน (หน่วยพิกเซลต้นแบบ) */
+  /* ตัวเลขในการ์ด */
   .value{
-    position:absolute;
-    left:calc(var(--px) * var(--cx)); top:calc(var(--px) * var(--top));
-    transform:translateX(-50%);
-    font-family:"Inter","Arial",sans-serif;
-    font-weight:600; font-size:calc(var(--px) * 84); line-height:1; letter-spacing:calc(var(--px) * 11); padding-left:calc(var(--px) * 11);
-    color:#000; white-space:nowrap; pointer-events:none;
+    position:absolute; top:calc(var(--px) * 287);
+    width:calc(var(--px) * 161); height:calc(var(--px) * 100);
+    display:flex; align-items:center; justify-content:center;
+    font-family:"Figtree","Poppins","Segoe UI",Arial,sans-serif;
+    font-weight:700; font-size:calc(var(--px) * 86); line-height:1;
+    color:#000; letter-spacing:calc(var(--px) * -1);
+    pointer-events:none;
   }
-  #v-temp { --cx:544;  --top:360; }
-  #v-hum  { --cx:903;  --top:359.5; }
-  #v-smoke{ --cx:1285.5; --top:355; }
+  #v-temp{ left:calc(var(--px) * 183); }
+  #v-hum { left:calc(var(--px) * 510); }
+  #v-light{left:calc(var(--px) * 833); }
+  #v-water{left:calc(var(--px) * 1123);}
 
   /* ปุ่ม toggle */
   .toggle{
-    position:absolute; top:calc(var(--px) * 622);
-    width:calc(var(--px) * 201); height:calc(var(--px) * 80);
-    border-radius:calc(var(--px) * 40);
+    position:absolute;
+    width:calc(var(--px) * 100); height:calc(var(--px) * 35);
+    border-radius:calc(var(--px) * 18);
     background:var(--track);
     cursor:pointer; touch-action:none; outline:none;
     transition:background .25s ease;
     --p:0;
   }
   .toggle[aria-checked="true"]{ background:var(--track-on); }
-  .toggle:focus-visible{ box-shadow:0 0 0 calc(var(--px) * 5) rgba(43,111,200,.55); }
+  .toggle:focus-visible{ box-shadow:0 0 0 calc(var(--px) * 3) rgba(7,133,148,.6); }
   .knob{
-    position:absolute; left:0; top:calc(var(--px) * 7);
-    width:calc(var(--px) * 67); height:calc(var(--px) * 67);
+    position:absolute; left:calc(var(--px) * -1); top:calc(var(--px) * 0.5);
+    width:calc(var(--px) * 34); height:calc(var(--px) * 34);
     border-radius:50%;
-    border:calc(var(--px) * 4) solid var(--knob-border);
-    background:linear-gradient(90deg,#2a7ab1,#1c308c);
-    transform:translateX(calc(var(--px) * 134 * var(--p)));
+    background:var(--knob);
+    border:calc(var(--px) * 2.5) solid var(--knob-line);
+    transform:translateX(calc(var(--px) * 67 * var(--p)));
     transition:transform .22s cubic-bezier(.4,0,.2,1);
   }
   .toggle.dragging .knob{ transition:none; }
-  #t-temp { left:calc(var(--px) * 441); }
-  #t-hum  { left:calc(var(--px) * 799); }
-  #t-smoke{ left:calc(var(--px) * 1178); }
+  #t-temp { left:calc(var(--px) * 208);  top:calc(var(--px) * 483); }
+  #t-hum  { left:calc(var(--px) * 541);  top:calc(var(--px) * 483); }
+  #t-light{ left:calc(var(--px) * 865);  top:calc(var(--px) * 483); }
+  #t-water{ left:calc(var(--px) * 1156); top:calc(var(--px) * 485); }
 </style>
 </head>
 <body>
   <main class="stage">
-    <h1>CABINET MONITOR</h1>
+    <h1>smart fram iot</h1>
+    <img class="title" src="title.png" alt="">
 
-    <div class="value" id="v-temp">30</div>
-    <div class="value" id="v-hum">50</div>
-    <div class="value" id="v-smoke">1023</div>
+    <div class="value" id="v-temp">25</div>
+    <div class="value" id="v-hum">60</div>
+    <div class="value" id="v-light">100</div>
+    <div class="value" id="v-water">10</div>
 
-    <div class="toggle" id="t-temp"  role="switch" aria-checked="false" aria-label="อุณหภูมิ"  tabindex="0" data-target="v-temp"  data-min="20" data-max="40"><div class="knob"></div></div>
-    <div class="toggle" id="t-hum"   role="switch" aria-checked="false" aria-label="ความชื้น"  tabindex="0" data-target="v-hum"   data-min="30" data-max="90"><div class="knob"></div></div>
-    <div class="toggle" id="t-smoke" role="switch" aria-checked="false" aria-label="ควัน"     tabindex="0" data-target="v-smoke" data-min="0"  data-max="1023"><div class="knob"></div></div>
+    <div class="toggle" id="t-temp"  role="switch" aria-checked="false" aria-label="อุณหภูมิ" tabindex="0" data-target="v-temp"  data-min="20" data-max="40"><div class="knob"></div></div>
+    <div class="toggle" id="t-hum"   role="switch" aria-checked="false" aria-label="ความชื้น" tabindex="0" data-target="v-hum"   data-min="30" data-max="90"><div class="knob"></div></div>
+    <div class="toggle" id="t-light" role="switch" aria-checked="false" aria-label="ค่าแสง"   tabindex="0" data-target="v-light" data-min="50" data-max="500"><div class="knob"></div></div>
+    <div class="toggle" id="t-water" role="switch" aria-checked="false" aria-label="ระดับน้ำ" tabindex="0" data-target="v-water" data-min="1"  data-max="30"><div class="knob"></div></div>
   </main>
 
 <script>
   const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
-  const UPDATE_MS = 1500;   // ความถี่การสุ่มค่าเมื่อ toggle เป็น ON
+  const UPDATE_MS = 1500;
 
   document.querySelectorAll('.toggle').forEach(tg => {
     const out = document.getElementById(tg.dataset.target);
@@ -99,18 +114,20 @@
       tg.setAttribute('aria-checked', on);
       tg.style.setProperty('--p', on ? 1 : 0);
       clearInterval(timer);
-      if (on) { randomize(); timer = setInterval(randomize, UPDATE_MS); } // ON  = สุ่มค่าต่อเนื่อง
+      if (on) { randomize(); timer = setInterval(randomize, UPDATE_MS); } // ON = สุ่มค่าต่อเนื่อง
     };                                                                     // OFF = หยุดค่าไว้
 
-    randomize();       // สุ่มค่าตอนเปิดหน้าเว็บ (เค้าโครงอยู่ที่เดิม)
+    randomize();      // สุ่มค่าตอนเปิดหน้าเว็บ (ตำแหน่งเค้าโครงคงเดิม)
     setState(false);
 
     // คลิก / ลากปุ่ม
     let startX = 0, moved = false, dragging = false;
+    const rect = () => tg.getBoundingClientRect();
     const posToP = (x) => {
-      const r = tg.getBoundingClientRect(), k = r.height;
-      return Math.min(1, Math.max(0, (x - r.left - k / 2) / (r.width - k)));
+      const r = rect(), knob = r.height;
+      return Math.min(1, Math.max(0, (x - r.left - knob / 2) / (r.width - knob)));
     };
+
     tg.addEventListener('pointerdown', e => {
       dragging = true; moved = false; startX = e.clientX;
       tg.setPointerCapture(e.pointerId);
@@ -122,11 +139,13 @@
         tg.style.setProperty('--p', posToP(e.clientX));
       }
     });
-    tg.addEventListener('pointerup', e => {
+    const end = e => {
       if (!dragging) return;
       dragging = false; tg.classList.remove('dragging');
-      setState(moved ? posToP(e.clientX) >= 0.5 : !on);
-    });
+      if (moved) setState(posToP(e.clientX) >= 0.5);
+      else setState(!on);
+    };
+    tg.addEventListener('pointerup', end);
     tg.addEventListener('pointercancel', () => { dragging = false; tg.classList.remove('dragging'); setState(on); });
 
     tg.addEventListener('keydown', e => {
